@@ -55,7 +55,7 @@ def create_refresh_token(data: dict):
 
 
 
-def decode_token(token: str):
+def decode_access_token(token: str):
     try:
         payload = jwt.decode(
             token,
@@ -63,5 +63,22 @@ def decode_token(token: str):
             algorithms=[settings.ALGORITHM],
         )
         return payload
+    except JWTError:
+        return None
+
+
+def decode_refresh_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+
+        if payload.get("type") != "refresh":
+            return None
+
+        return payload
+
     except JWTError:
         return None

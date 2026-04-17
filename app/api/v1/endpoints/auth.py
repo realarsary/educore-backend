@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_current_user, get_db
 from app.repository.user_repo import UserRepository
 from app.services.auth_service import AuthService
-from app.schemas.user import UserCreate, UserLogin
+from app.schemas.user import UserCreate, UserLogin, RefreshRequest
 
 router = APIRouter()
 
@@ -26,3 +26,17 @@ async def login(
     db: AsyncSession = Depends(get_db),
 ):
     return await auth_service.login(db, user_data.email, user_data.password)
+
+
+@router.post("/refresh")
+async def refresh(
+    data: RefreshRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    return await auth_service.refresh_tokens(db, data.refresh_token)
+
+
+
+@router.get("/me")
+async def me(user=Depends(get_current_user)):
+    return user

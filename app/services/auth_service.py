@@ -5,9 +5,16 @@ from app.core.security import (
     verify_password,
     create_access_token,
     create_refresh_token,
-    decode_token,
+    decode_access_token,
 )
 
+from app.core.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_refresh_token,
+)
+
+from app.core.redis_helpers import get_stored_refresh, save_refresh
 from app.repository.user_repo import UserRepository
 from app.models.user import User
 
@@ -49,9 +56,41 @@ class AuthService:
 
         access_token = create_access_token({"sub": str(user.id)})
         refresh_token = create_refresh_token({"sub": str(user.id)})
+        
+        await save_refresh(user.id, refresh_token)
 
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
             "token_type": "bearer",
+        }
+
+
+    async def refresh_tokens(self, db, refresh_token: str):
+
+        payload = decode_refresh_token(refresh_token)
+
+        if not payload:
+            raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+        user_id = payload.get("sub")
+
+        stored_token = await get_stored_refresh(user_id)
+
+        if stored_token != refresh_token:
+            raise HTTPException(status_code=401, detail="Token revoked")
+
+        user = await self.user_repo.get_by_id(db, user_id)
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        new_access = create_access_token({"sub": user_id})
+        new_refresh = create_refresh_token({"sub": user_id})
+
+        await save_refresh(user_id, new_refresh)
+
+        return {
+            "access_token": new_access,
+            "refresh_token": new_refresh,
         }
