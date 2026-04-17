@@ -1,4 +1,6 @@
 from fastapi import HTTPException, status
+from app.core.redis_helpers import delete_refresh
+from app.core.security import get_user_id_from_token
 
 from app.core.security import (
     hash_password,
@@ -94,3 +96,15 @@ class AuthService:
             "access_token": new_access,
             "refresh_token": new_refresh,
         }
+    async def logout(self, refresh_token: str):
+
+        payload = decode_refresh_token(refresh_token)
+
+        if not payload:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        user_id = payload.get("sub")
+
+        await delete_refresh(user_id)
+
+        return {"message": "Logged out successfully"}

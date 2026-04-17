@@ -82,3 +82,23 @@ def decode_refresh_token(token: str):
 
     except JWTError:
         return None
+
+
+def get_user_id_from_token(token: str) -> str:
+    payload = decode_access_token(token)
+
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token"
+        )
+
+    user_id = payload.get("sub")
+
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload"
+        )
+
+    return user_id

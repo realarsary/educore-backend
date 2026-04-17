@@ -17,9 +17,11 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
 
 class UserResponse(UserBase):
     id: UUID
@@ -27,6 +29,11 @@ class UserResponse(UserBase):
 
     class Config:
         from_attributes = True
-        
+
+
 class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+class LogoutRequest(BaseModel):
     refresh_token: str
