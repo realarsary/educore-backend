@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+
 from app.core.database import engine
 from app.core.redis import redis_client
+from app.api.v1.api import api_router
 
 app = FastAPI()
 
@@ -17,3 +19,5 @@ async def startup():
 @app.get("/")
 def root():
     return {"message": "EduCore backend worked"}
+
+app.include_router(api_router, prefix="/api/v1")
