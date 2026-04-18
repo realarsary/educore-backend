@@ -17,6 +17,12 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_DB: int
 
+    MINIO_ENDPOINT: str
+    MINIO_ACCESS_KEY: str
+    MINIO_SECRET_KEY: str
+    MINIO_SECURE: bool = False
+    MINIO_BUCKET: str = "educore"
+
     @property
     def DATABASE_URL_ASYNC(self):
         return (
