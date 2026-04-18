@@ -30,3 +30,12 @@ class EnrollmentRepository:
             .where(Enrollment.user_id == user_id)
         )
         return result.scalars().all()
+   
+
+    async def get_course_students(self, db: AsyncSession, course_id):
+        result = await db.execute(
+            select(Enrollment)
+            .options(selectinload(Enrollment.user))  # 🔥 важно
+            .where(Enrollment.course_id == course_id)
+        )
+        return result.scalars().all()

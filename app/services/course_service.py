@@ -4,13 +4,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.course import Course
 from app.repository.course_repo import CourseRepository
+from app.repository.enrollment_repo import EnrollmentRepository
 from app.models.user import UserRole
 
 
 class CourseService:
 
-    def __init__(self, course_repo: CourseRepository):
+    def __init__(self, course_repo: CourseRepository, enrollment_repo: EnrollmentRepository):
         self.course_repo = course_repo
+        self.enrollment_repo = enrollment_repo
 
     async def create_course(self, db: AsyncSession, user, title: str, description: str):
 
@@ -64,3 +66,25 @@ class CourseService:
             )
 
         return await self.course_repo.delete(db, course_id)
+
+
+    async def get_my_courses(self, db: AsyncSession, user):
+        return await self.course_repo.get_by_owner(db, user.id)
+
+
+    async def get_course_students(self, db: AsyncSession, user, course_id):
+
+        course = await self.course_repo.get_by_id(db, course_id)
+
+        if not course:
+            raise HTTPException(status_code=404, detail="Course not found")
+
+        if course.owner_id != user.id and user.role != UserRole.ADMIN:
+            raise HTTPException(
+                status_code=403,
+                detail="Not allowed"
+            )
+
+        enrollments = await self.enrollment_repo.get_course_students(db, course_id)
+
+        return [e.user for e in enrollments]

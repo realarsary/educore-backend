@@ -16,6 +16,7 @@ class Enrollment(Base):
     course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
 
     course = relationship("Course")
+    user = relationship("User")
 
     __table_args__ = (
         UniqueConstraint("user_id", "course_id", name="uq_user_course"),
