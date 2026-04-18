@@ -24,6 +24,7 @@ from app.core.database import Base
 from app.models.user import User
 from app.models.course import Course
 from app.models.enrollment import Enrollment
+from app.models.lesson import Lesson
 
 target_metadata = Base.metadata
 
