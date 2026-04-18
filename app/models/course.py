@@ -14,6 +14,7 @@ class Course(Base):
 
     title = Column(String, nullable=False)
     description = Column(Text, nullable=True)
+    cover_url = Column(String, nullable=True)
 
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 

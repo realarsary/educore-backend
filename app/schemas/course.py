@@ -19,6 +19,7 @@ class CourseUpdate(BaseModel):
 class CourseResponse(CourseBase):
     id: UUID
     owner_id: UUID
+    cover_url: str | None = None
 
     class Config:
         from_attributes = True

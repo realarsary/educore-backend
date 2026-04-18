@@ -1,18 +1,22 @@
 from uuid import UUID
-
-from fastapi import APIRouter, Depends
+from io import BytesIO
+from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 
 from app.api.deps import get_db, get_current_user
+from app.core.minio import minio_client
 from app.services.course_service import CourseService
 from app.repository.course_repo import CourseRepository
 from app.repository.enrollment_repo import EnrollmentRepository
 from app.schemas.course import CourseCreate, CourseResponse, CourseUpdate
 from app.schemas.user import UserResponse
+from app.services.file_service import FileService
+
 router = APIRouter()
 
+file_service = FileService(minio_client)
 course_repo = CourseRepository()
 enrollment_repo = EnrollmentRepository()
 course_service = CourseService(course_repo, enrollment_repo)
@@ -87,3 +91,29 @@ async def course_students(
     user=Depends(get_current_user),
 ):
     return await course_service.get_course_students(db, user, course_id)
+
+
+@router.post("/{course_id}/cover", response_model=CourseResponse)
+async def upload_cover(
+    course_id: UUID,
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    ext = file.filename.split(".")[-1]
+    object_name = f"covers/{user.id}.{ext}"
+
+    contents = await file.read()
+
+    await file_service.upload_file(
+        file_name=object_name,
+        data=BytesIO(contents),  
+        length=len(contents), 
+        content_type=file.content_type,
+    )
+
+    cover_url = await file_service.get_download_url(object_name)
+
+    return await course_service.update_course(
+        db, user, course_id, {"cover_url": cover_url}
+    )
