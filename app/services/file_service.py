@@ -8,13 +8,7 @@ class FileService:
         self.client = client
         self.bucket = settings.MINIO_BUCKET
 
-    async def ensure_bucket(self):
-        exists = await self.client.bucket_exists(self.bucket)
-        if not exists:
-            await self.client.make_bucket(self.bucket)
-
     async def upload_file(self, file_name: str, data, length: int, content_type: str) -> str:
-        await self.ensure_bucket()
         await self.client.put_object(
             bucket_name=self.bucket,
             object_name=file_name,
