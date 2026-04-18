@@ -29,7 +29,14 @@ class AuthService:
 
     async def register(self, db, email: str, username: str, password: str, role: str):
 
+        if role == UserRole.ADMIN:
+            raise HTTPException(
+                status_code=403,
+                detail="Cannot register as admin"
+            )
+
         existing = await self.user_repo.get_by_email(db, email)
+
         if existing:
             raise HTTPException(
                 status_code=400,
