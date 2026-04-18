@@ -18,7 +18,7 @@ from app.core.security import (
 
 from app.core.redis_helpers import get_stored_refresh, save_refresh
 from app.repository.user_repo import UserRepository
-from app.models.user import User
+from app.models.user import User, UserRole
 
 
 class AuthService:
