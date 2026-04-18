@@ -26,6 +26,7 @@ from app.models.course import Course
 from app.models.enrollment import Enrollment
 from app.models.lesson import Lesson
 from app.models.category import Category
+from app.models.progress import LessonProgress
 
 target_metadata = Base.metadata
 
