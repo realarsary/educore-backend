@@ -1,8 +1,11 @@
+from uuid import UUID
+
+from sqlalchemy import or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from app.models.course import Course
 
-
+    
 class CourseRepository:
 
     async def create(self, db: AsyncSession, course: Course):
@@ -43,3 +46,17 @@ class CourseRepository:
         await db.execute(query)
         await db.commit()
         return True
+
+    async def search(self, db: AsyncSession, search: str = None, category_id: UUID = None):
+        query = select(Course)
+
+        if search:
+            query = query.where(
+                Course.title.ilike(f"%{search}%")
+            )
+
+        if category_id:
+            query = query.where(Course.category_id == category_id)
+
+        result = await db.execute(query)
+        return result.scalars().all()

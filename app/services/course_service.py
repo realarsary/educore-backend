@@ -88,3 +88,6 @@ class CourseService:
         enrollments = await self.enrollment_repo.get_course_students(db, course_id)
 
         return [e.user for e in enrollments]
+    
+    async def search_courses(self, db: AsyncSession, search: str = None, category_id = None):
+        return await self.course_repo.search(db, search, category_id)

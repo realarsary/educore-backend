@@ -2,8 +2,7 @@ from uuid import UUID
 from io import BytesIO
 from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
-
+from typing import List,Optional
 
 from app.api.deps import get_db, get_current_user
 from app.core.minio import minio_client
@@ -50,6 +49,13 @@ async def my_courses(
 ):
     return await course_service.get_my_courses(db, user)
 
+@router.get("/search", response_model=List[CourseResponse])
+async def search_courses(
+    search: Optional[str] = None,
+    category_id: Optional[UUID] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    return await course_service.search_courses(db, search, category_id)
 
 @router.get("/{course_id}", response_model=CourseResponse)
 async def get_course(
