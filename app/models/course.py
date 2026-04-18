@@ -17,5 +17,7 @@ class Course(Base):
     cover_url = Column(String, nullable=True)
 
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-
     owner = relationship("User")
+
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id"), nullable=True)
+    category = relationship("Category")
