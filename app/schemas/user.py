@@ -2,10 +2,7 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum
 from uuid import UUID
 
-class UserRole(str, Enum):
-    STUDENT = "student"
-    INSTRUCTOR = "instructor"
-    ADMIN = "admin"
+from app.models.user import UserRole
 
 
 class UserBase(BaseModel):
