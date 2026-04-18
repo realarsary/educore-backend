@@ -16,12 +16,12 @@ async def startup():
     pong = await redis_client.ping()
     print("✅ Redis connected:", pong)
     
-    bucket_exists = await minio_client.bucket_exists(settings.MINIO_BUCKET)
-    if not bucket_exists:
-        await minio_client.make_bucket(settings.MINIO_BUCKET)
-        print(f"✅ MinIO: bucket '{settings.MINIO_BUCKET}' created")
-    else:
-        print(f"✅ MinIO: bucket '{settings.MINIO_BUCKET}' already exists")
+    # bucket_exists = await minio_client.bucket_exists(settings.MINIO_BUCKET)
+    # if not bucket_exists:
+    #     await minio_client.make_bucket(settings.MINIO_BUCKET)
+    #     print(f"✅ MinIO: bucket '{settings.MINIO_BUCKET}' created")
+    # else:
+    #     print(f"✅ MinIO: bucket '{settings.MINIO_BUCKET}' already exists")
 
         
 @app.get("/")

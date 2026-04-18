@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 from uuid import UUID
+from enum import Enum
+
+
+class LessonStatus(str, Enum):
+    DRAFT = "draft"
+    PUBLISHED = "published"
 
 
 class LessonCreate(BaseModel):
@@ -14,6 +20,13 @@ class LessonResponse(BaseModel):
     content: str | None
     order: int
     course_id: UUID
+    video_key: str | None
+    status: LessonStatus
 
     class Config:
         from_attributes = True
+
+
+class LessonUploadResponse(BaseModel):
+    lesson: LessonResponse
+    upload_url: str
