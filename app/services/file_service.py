@@ -35,7 +35,6 @@ class FileService:
  
 
     async def get_upload_url(self, object_name: str, expires: int = 3600) -> str:
-        await self.ensure_bucket()
         url = await self.client.presigned_put_object(
             bucket_name=self.bucket,
             object_name=object_name,
