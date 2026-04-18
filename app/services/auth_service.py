@@ -40,7 +40,15 @@ class AuthService:
         if existing:
             raise HTTPException(
                 status_code=400,
-                detail="User already exists"
+                detail="This email already exists"
+            )
+
+        existing_username = await self.user_repo.get_by_username(db, username)
+
+        if existing_username:
+            raise HTTPException(
+                status_code=400,
+                detail="This username already exists"
             )
 
         user = User(

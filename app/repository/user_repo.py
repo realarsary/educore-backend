@@ -10,6 +10,10 @@ class UserRepository:
         result = await db.execute(select(User).where(User.email == email))
         return result.scalar_one_or_none()
 
+    async def get_by_username(self, db: AsyncSession, username: str):
+        result = await db.execute(select(User).where(User.username == username))
+        return result.scalar_one_or_none()
+
     async def get_by_id(self, db: AsyncSession, user_id):
         result = await db.execute(select(User).where(User.id == user_id))
         return result.scalar_one_or_none()

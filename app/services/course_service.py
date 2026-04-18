@@ -14,7 +14,7 @@ class CourseService:
         self.course_repo = course_repo
         self.enrollment_repo = enrollment_repo
 
-    async def create_course(self, db: AsyncSession, user, title: str, description: str):
+    async def create_course(self, db: AsyncSession, user, title: str, description: str, category_id: str):
 
         if user.role not in [UserRole.INSTRUCTOR, UserRole.ADMIN]:
             raise HTTPException(
@@ -26,6 +26,7 @@ class CourseService:
             title=title,
             description=description,
             owner_id=user.id,
+            category_id=category_id
         )
 
         return await self.course_repo.create(db, course)

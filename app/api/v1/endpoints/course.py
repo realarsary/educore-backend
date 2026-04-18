@@ -31,7 +31,8 @@ async def create_course(
         db,
         user,
         data.title,
-        data.description
+        data.description,
+        data.category_id,
     )
 
 
