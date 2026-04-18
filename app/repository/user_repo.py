@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update as sa_update
 
 from app.models.user import User
 
@@ -19,3 +19,12 @@ class UserRepository:
         await db.commit()
         await db.refresh(user)
         return user
+    
+    async def update(self, db: AsyncSession, user_id, data: dict):
+        await db.execute(
+            sa_update(User)
+            .where(User.id == user_id)
+            .values(**data)
+        )
+        await db.commit()
+        return await self.get_by_id(db, user_id)

@@ -15,6 +15,10 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserUpdate(BaseModel):
+    username: str | None = None
+    email: EmailStr | None = None
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str

@@ -42,7 +42,3 @@ async def logout(
 ):
     return await auth_service.logout(data.refresh_token)
 
-
-@router.get("/me")
-async def me(user=Depends(get_current_user)):
-    return user
