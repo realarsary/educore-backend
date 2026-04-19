@@ -23,4 +23,16 @@ class Discussion(Base):
 
     user = relationship("User")
     lesson = relationship("Lesson")
-    replies = relationship("Discussion", backref="parent", remote_side=[id])
+
+    parent = relationship(
+        "Discussion",
+        remote_side=[id],
+        back_populates="replies",
+    )
+
+    replies = relationship(
+        "Discussion",
+        back_populates="parent",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
