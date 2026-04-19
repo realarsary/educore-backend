@@ -28,6 +28,7 @@ from app.models.lesson import Lesson
 from app.models.category import Category
 from app.models.progress import LessonProgress
 from app.models.review import Review
+from app.models.discussion import Discussion
 
 target_metadata = Base.metadata
 
