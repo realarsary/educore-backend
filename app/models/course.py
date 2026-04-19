@@ -20,4 +20,4 @@ class Course(Base):
     owner = relationship("User")
 
     category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id"), nullable=True)
-    category = relationship("Category")
+    category = relationship("Category", lazy="selectin")
