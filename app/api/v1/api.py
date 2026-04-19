@@ -6,6 +6,7 @@ from app.api.v1.endpoints import lesson
 from app.api.v1.endpoints import user
 from app.api.v1.endpoints import category
 from app.api.v1.endpoints import progress
+from app.api.v1.endpoints import review
 
 api_router = APIRouter()
 
@@ -16,3 +17,4 @@ api_router.include_router(lesson.router, prefix="", tags=["lessons"])
 api_router.include_router(user.router, prefix="/users", tags=["users"])
 api_router.include_router(category.router, prefix="/categories", tags=["categories"])
 api_router.include_router(progress.router, prefix="/progress", tags=["progress"])
+api_router.include_router(review.router, prefix="", tags=["reviews"])
