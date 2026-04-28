@@ -41,3 +41,12 @@ class EnrollmentRepository:
             .where(Enrollment.course_id == course_id)
         )
         return result.scalars().all()
+    
+    async def get_by_user_course(self, db: AsyncSession, user_id, course_id):
+        result = await db.execute(
+            select(Enrollment).where(
+                Enrollment.user_id == user_id,
+                Enrollment.course_id == course_id
+            )
+        )
+        return result.scalar_one_or_none()
